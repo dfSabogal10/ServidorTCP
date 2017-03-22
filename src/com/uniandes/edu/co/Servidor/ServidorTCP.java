@@ -5,6 +5,7 @@ import java.io.*;
 
 public class ServidorTCP {
 
+	private int conexionesActivas=0;
 	/**
 	 * @param args
 	 */
@@ -17,12 +18,17 @@ public class ServidorTCP {
 		
 			while(true) { 
 				Socket clientSocket = listenSocket.accept(); 
-				Conexion c = new Conexion(clientSocket); 
+				Conexion c = new Conexion(clientSocket,this); 
+				
 			} 
 	} 
 	catch(IOException e) {
 		System.out.println("Listen :"+e.getMessage());} 
 
+	}
+	
+	public void aumentarConexionesActivas(){
+		conexionesActivas++;
 	}
 
 }

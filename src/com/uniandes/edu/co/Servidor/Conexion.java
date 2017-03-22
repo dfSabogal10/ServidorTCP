@@ -14,7 +14,7 @@ public class Conexion extends Thread{
 					input = new DataInputStream( clientSocket.getInputStream()); 
 					output =new DataOutputStream( clientSocket.getOutputStream()); 
 					this.start(); 
-		} 
+			} 
 			catch(IOException e) {
 			System.out.println("Connection:"+e.getMessage());
 			} 
@@ -44,10 +44,10 @@ public class Conexion extends Thread{
 			  FileInputStream fis = new FileInputStream(aEnviar);
 	          BufferedInputStream bis = new BufferedInputStream(fis);
 	          bis.read(out,0,out.length);	 
-	          System.out.println("sending file: "+filename+" length: "+out.length);
+	          System.out.println("sending file: "+filename+" length: "+out.length+" ...");
 	          output.write(out,0,out.length);
-	          
 	          output.flush();
+	          System.out.println("file "+ filename+ " sent.");
 	          System.out.println("Done.");			 
 	          //output.write(aEnviar); // UTF is a string encoding
 		  //  output.writeUTF(data); 
