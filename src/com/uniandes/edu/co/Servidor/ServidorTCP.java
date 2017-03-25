@@ -3,32 +3,56 @@ package com.uniandes.edu.co.Servidor;
 import java.net.*;
 import java.io.*;
 
-public class ServidorTCP {
 
-	private int conexionesActivas=0;
+public class ServidorTCP extends Thread{
+
+	public final static int maximoNumeroConexiones=5;
+	public final static int tamañoBuffer=1024;
+	private int conexionesActivas;
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
+
+	public ServidorTCP()
+	{
+		conexionesActivas=0;
+		this.start();
+		
+	}
+	public void run()
+	{
 		try{ 
 			int serverPort = 6880; 
-			ServerSocket listenSocket = new ServerSocket(serverPort); 
-	  
+			ServerSocket listenSocket = new ServerSocket(serverPort);
+			listenSocket.setReceiveBufferSize(tamañoBuffer);
 			System.out.println("server start listening... ... ...");
-		
 			while(true) { 
-				Socket clientSocket = listenSocket.accept(); 
-				Conexion c = new Conexion(clientSocket,this); 
-				
+				if(conexionesActivas<maximoNumeroConexiones)
+				{
+					Socket clientSocket = listenSocket.accept();
+					Conexion c = new Conexion(clientSocket,this); 
+					synchronized(this){
+						conexionesActivas++;
+						System.out.println("se agrego conexion: "+conexionesActivas);
+					}
+				}
 			} 
-	} 
-	catch(IOException e) {
-		System.out.println("Listen :"+e.getMessage());} 
+		} 
+		catch(IOException e) {
+			System.out.println("Listen :"+e.getMessage());} 
+	}
+	public void disminuirConexionesActivas(){
+		synchronized(this){
+			conexionesActivas--;
+			System.out.println("se cerro conexion: "+conexionesActivas);
+
+		}
+	}
+	public static void main(String[] args) {
+		new ServidorTCP();
 
 	}
+
 	
-	public void aumentarConexionesActivas(){
-		conexionesActivas++;
-	}
 
 }

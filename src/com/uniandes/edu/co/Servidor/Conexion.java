@@ -7,24 +7,28 @@ public class Conexion extends Thread{
 	DataInputStream input; 
 	DataOutputStream output; 
 	Socket clientSocket; 
-	
-	public Conexion (Socket aClientSocket) { 
+	ServidorTCP server;
+	public Conexion (Socket aClientSocket, ServidorTCP servidorTCP) { 
+		server=servidorTCP;
 		try { 
 					clientSocket = aClientSocket; 
 					input = new DataInputStream( clientSocket.getInputStream()); 
 					output =new DataOutputStream( clientSocket.getOutputStream()); 
-					this.start(); 
+					this.start();  
 			} 
 			catch(IOException e) {
-			System.out.println("Connection:"+e.getMessage());
+				System.out.println("Connection:"+e.getMessage());
 			} 
 	  } 
 
-	  public void run() { 
+
+	public void run() { 
 		try { 
+				System.out.println("corre");
 					
 			  //Step 1 read length
 			  int nb = input.readInt();
+			  System.out.println(nb);
 			  System.out.println("Read Length"+ nb);
 			  byte[] digit = new byte[nb];
 			  //Step 2 read byte
@@ -44,7 +48,8 @@ public class Conexion extends Thread{
 			  FileInputStream fis = new FileInputStream(aEnviar);
 	          BufferedInputStream bis = new BufferedInputStream(fis);
 	          bis.read(out,0,out.length);	 
-	          System.out.println("sending file: "+filename+" length: "+out.length+" ...");
+	          System.out.println("sending file: "+filename+" length: "+out.length+" bytes ...");
+	          output.writeInt(out.length);
 	          output.write(out,0,out.length);
 	          output.flush();
 	          System.out.println("file "+ filename+ " sent.");
@@ -60,6 +65,7 @@ public class Conexion extends Thread{
 			finally { 
 			  try { 
 				  clientSocket.close();
+				  server.disminuirConexionesActivas();
 			  }
 			  catch (IOException e){/*close failed*/}
 			}
