@@ -25,7 +25,29 @@ public class Conexion extends Thread{
 	public void run() { 
 		try { 
 				System.out.println("corre");
-					
+			  //Saludo protocolo
+			  String saludo=input.readLine();
+			  if(saludo.equals("ZUPP"))
+			  {
+				  output.writeUTF(saludo);
+				  output.flush();
+			  }
+			  //Solicitud archivos
+			  String solicitud =input.readUTF();
+			  if(solicitud=="ARCHIVOS")
+			  {
+				  File folder = new File("./files");
+				  File[] listOfFiles = folder.listFiles();
+
+				      for (int i = 0; i < listOfFiles.length; i++) {
+				        if (listOfFiles[i].isFile()) {
+				          output.writeUTF(listOfFiles[i].getName()+","+listOfFiles[i].length());
+				        } else if (listOfFiles[i].isDirectory()) {
+				          System.out.println("Directory " + listOfFiles[i].getName());
+				        }
+				      }
+			  }
+			  //Descarga archivo
 			  //Step 1 read length
 			  int nb = input.readInt();
 			  System.out.println(nb);
