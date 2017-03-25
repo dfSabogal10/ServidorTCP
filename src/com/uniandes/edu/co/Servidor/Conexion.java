@@ -26,11 +26,11 @@ public class Conexion extends Thread{
 		try { 
 				System.out.println("corre");
 			  //Saludo protocolo
-			  String saludo=input.readLine();
+			  String saludo=input.readUTF();
 			  if(saludo.equals("ZUPP"))
 			  {
-				  output.writeUTF(saludo);
-				  output.flush();
+				 output.writeUTF(saludo);
+				 output.flush();
 			  }
 			  //Solicitud archivos
 			  String solicitud =input.readUTF();
@@ -46,6 +46,7 @@ public class Conexion extends Thread{
 				          System.out.println("Directory " + listOfFiles[i].getName());
 				        }
 				      }
+				      output.flush();
 			  }
 			  //Descarga archivo
 			  //Step 1 read length
