@@ -4,7 +4,7 @@ import java.io.*;
 
 public class Conexion extends Thread{
 
-	public final static int tamañoPaquete=64000;
+	public final static int tamanio=64000;
 	DataInputStream input; 
 	DataOutputStream output; 
 	Socket clientSocket; 
@@ -90,12 +90,19 @@ public class Conexion extends Thread{
 					output.writeInt(out.length);
 					int contadorBytes;
 					for (contadorBytes = 0; contadorBytes < out.length; contadorBytes++) {
-							if((out.length-contadorBytes) >= tamañoPaquete)
+						String senalEnvio= input.readUTF();
+						System.out.println(senalEnvio);	
+
+						if(senalEnvio.equals("NEXT_PACKAGE"))
+						{
+							System.out.println("ENTROOOOO");	
+
+							if((out.length-contadorBytes) >= tamanio)
 							{
-								output.write(out,contadorBytes,tamañoPaquete);
+								output.write(out,contadorBytes,tamanio);
 								//				output.flush();
-								System.out.println("paquete de "+tamañoPaquete +" bytes enviado.");
-								contadorBytes+=tamañoPaquete-1;
+								System.out.println("paquete de "+tamanio +" bytes enviado.");
+								contadorBytes+=tamanio-1;
 
 							}
 							else
@@ -106,11 +113,8 @@ public class Conexion extends Thread{
 								System.out.println("Ultimo paquete de "+(out.length-contadorBytes) +" bytes enviado.");
 								contadorBytes+=out.length-contadorBytes;
 							}
-							String señalEnvio= input.readUTF();
-						while(!señalEnvio.equals("NEXT_PACKAGE"))
-						{
-							señalEnvio=input.readUTF();
 						}
+				
 			
 						
 					}
