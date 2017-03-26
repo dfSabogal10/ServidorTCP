@@ -34,9 +34,7 @@ public class Conexion extends Thread{
 				System.out.println(solicitud);
 				if(solicitud.equals("VIVE"))
 				{
-					output.writeUTF(solicitud);
-					output.flush();
-					System.out.println("heartbeat sent");
+					System.out.println("heartbeat recieved");
 				}
 				//solicitud protocolo
 				else if(solicitud.equals("ZUPP"))
@@ -59,7 +57,6 @@ public class Conexion extends Thread{
 						}
 					}
 					output.writeUTF(archivos);
-					System.out.println("lista de archivos enviada");
 					output.flush();
 					System.out.println("lista de archivos enviada");
 				}
@@ -85,7 +82,6 @@ public class Conexion extends Thread{
 					//Step 1 send length
 					//	  output.writeLong(aEnviar.length());
 					//Step 2 send file
-					
 					byte []  out=new byte[(int)aEnviar.length()];
 					FileInputStream fis = new FileInputStream(aEnviar);
 					BufferedInputStream bis = new BufferedInputStream(fis);
@@ -94,36 +90,45 @@ public class Conexion extends Thread{
 					output.writeInt(out.length);
 					int contadorBytes;
 					for (contadorBytes = 0; contadorBytes < out.length; contadorBytes++) {
-						if(out.length-contadorBytes >= tamañoPaquete)
+							if((out.length-contadorBytes) >= tamañoPaquete)
+							{
+								output.write(out,contadorBytes,tamañoPaquete);
+								//				output.flush();
+								System.out.println("paquete de "+tamañoPaquete +" bytes enviado.");
+								contadorBytes+=tamañoPaquete-1;
+
+							}
+							else
+							{
+								output.write(out,contadorBytes,out.length-contadorBytes);
+								
+								//				output.flush();
+								System.out.println("Ultimo paquete de "+(out.length-contadorBytes) +" bytes enviado.");
+								contadorBytes+=out.length-contadorBytes;
+							}
+							String señalEnvio= input.readUTF();
+						while(!señalEnvio.equals("NEXT_PACKAGE"))
 						{
-							output.write(out,contadorBytes,tamañoPaquete);
-							contadorBytes+=tamañoPaquete;
-			//				output.flush();
-							System.out.println("paquete de "+tamañoPaquete +" bytes enviado.");
+							señalEnvio=input.readUTF();
 						}
-						else
-						{
-							output.write(out,contadorBytes,out.length-contadorBytes);
-							contadorBytes+=out.length-contadorBytes;
-			//				output.flush();
-							System.out.println("Ultimo paquete de "+(out.length-contadorBytes) +" bytes enviado.");
-						}
+			
+						
 					}
-					
+
 					output.flush();
 					System.out.println("file "+ filename+ " sent. ( "+contadorBytes+ " bytes sent.)");
 					System.out.println("Done.");	
 					termino=true;
 				}
-				
+
 				//output.write(aEnviar); // UTF is a string encoding
 				//  output.writeUTF(data); 
 			} 
 			catch(EOFException e) {
 				System.out.println("EOF:"+e.getMessage()); 
 				termino=true;
-				} 
-				
+			} 
+
 			catch(IOException e) {
 				System.out.println("IO:"+e.getMessage()); 
 				termino=true;} 
