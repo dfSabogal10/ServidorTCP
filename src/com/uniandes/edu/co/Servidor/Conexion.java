@@ -110,7 +110,7 @@ public class Conexion extends Thread{
 								output.write(out,contadorBytes,out.length-contadorBytes);
 								
 								//				output.flush();
-								System.out.println("Ultimo paquete de "+(out.length-contadorBytes) +" bytes enviado.");
+								System.out.println("Ultimo paquete de "+(out.length-contadorBytes-1) +" bytes enviado.");
 								contadorBytes+=out.length-contadorBytes;
 							}
 						}
