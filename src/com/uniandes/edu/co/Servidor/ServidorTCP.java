@@ -6,9 +6,9 @@ import java.io.*;
 
 public class ServidorTCP extends Thread{
 
-	public final static int maximoNumeroConexiones=5;
-	public final static int tamanio=1024;
-	public final static int timeout=100000;
+	public final static int maximoNumeroConexiones=32000;
+	public final static int tamanio=2560000;
+	public final static int timeout=20000;
 	private int conexionesActivas;
 	/**
 	 * @param args
@@ -27,6 +27,7 @@ public class ServidorTCP extends Thread{
 			ServerSocket listenSocket = new ServerSocket(serverPort);
 			listenSocket.setReceiveBufferSize(tamanio);
 			listenSocket.setSoTimeout(timeout);
+			listenSocket.setPerformancePreferences(0, 0, 2);
 			System.out.println("server start listening... ... ...");
 			while(true) { 
 				if(conexionesActivas<maximoNumeroConexiones)

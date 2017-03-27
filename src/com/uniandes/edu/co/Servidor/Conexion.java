@@ -4,7 +4,7 @@ import java.io.*;
 
 public class Conexion extends Thread{
 
-	public final static int tamanio=64000;
+	public final static int tamanio=256000;
 	DataInputStream input; 
 	DataOutputStream output; 
 	Socket clientSocket; 
@@ -95,7 +95,6 @@ public class Conexion extends Thread{
 
 						if(senalEnvio.equals("NEXT_PACKAGE"))
 						{
-							System.out.println("ENTROOOOO");	
 
 							if((out.length-contadorBytes) >= tamanio)
 							{
@@ -122,7 +121,6 @@ public class Conexion extends Thread{
 					output.flush();
 					System.out.println("file "+ filename+ " sent. ( "+contadorBytes+ " bytes sent.)");
 					System.out.println("Done.");	
-					termino=true;
 				}
 
 				//output.write(aEnviar); // UTF is a string encoding
